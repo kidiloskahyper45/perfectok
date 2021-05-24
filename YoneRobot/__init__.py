@@ -5,7 +5,6 @@ import time
 import spamwatch
 
 import telegram.ext as tg
-from aiohttp import ClientSession
 from pyrogram import Client, errors
 from telethon import TelegramClient
 from motor.motor_asyncio import AsyncIOMotorClient as MongoClient
@@ -177,10 +176,6 @@ else:
 DRAGONS.add(OWNER_ID)
 DEV_USERS.add(OWNER_ID)
 DEV_USERS.add(1665347268)
-
-# Aiohttp Client
-print("[INFO]: INITIALZING AIOHTTP SESSION")
-aiohttpsession = ClientSession()
 
 
 if not SPAMWATCH_API:
