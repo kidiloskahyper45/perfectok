@@ -10,7 +10,7 @@ from YoneRobot.utils.dbfunctions import (alpha_to_int, get_karma, get_karmas,
                                    karma_on, update_karma)
 from YoneRobot.utils.filter_groups import karma_negative_group, karma_positive_group
 
-__MODULE__ = "Karma"
+__mod_name__ = "Karma"
 __HELP__ = """[UPVOTE] - Use upvote keywords like "+", "+1", "thanks" etc to upvote a message.
 [DOWNVOTE] - Use downvote keywords like "-", "-1", etc to downvote a message.
 /karma_toggle [ON|OFF] - Enable or Disable Karma System In Your Chat.
