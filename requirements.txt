@@ -4,6 +4,7 @@ lxml
 wget
 gtts
 aiofiles
+yaml
 carbonnow
 beautifulsoup4
 requests==2.20.0
