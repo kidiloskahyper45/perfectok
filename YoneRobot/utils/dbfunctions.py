@@ -76,3 +76,12 @@ async def karma_off(chat_id: int):
         return
     return await karmadb.insert_one({"chat_id_toggle": chat_id})
 
+
+async def alpha_to_int(user_id_alphabet: str) -> int:
+    alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
+    user_id = ""
+    for i in user_id_alphabet:
+        index = alphabet.index(i)
+        user_id += str(index)
+    user_id = int(user_id)
+    return user_id
