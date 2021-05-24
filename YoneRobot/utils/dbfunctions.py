@@ -1,6 +1,6 @@
 from typing import Dict, List, Union
 
-from YoneRobot.mango import db
+from YoneRobot.mongo import db
 from YoneRobot.utils.functions import obj_to_str, str_to_obj
 
 karmadb = db.karma
