@@ -4,6 +4,7 @@ lxml
 wget
 gtts
 aiofiles
+carbonnow
 beautifulsoup4
 requests==2.20.0
 python-telegram-bot==12.8
