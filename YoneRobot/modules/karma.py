@@ -3,7 +3,7 @@ import asyncio
 from pyrogram import filters
 
 from YoneRobot import pbot
-from YoneRobot.utils.decorators.errors import capture_err
+from YoneRobot.utils.errors import capture_err
 from YoneRobot.modules.admin import member_permissions
 from YoneRobot.utils.dbfunctions import (alpha_to_int, get_karma, get_karmas,
                                    int_to_alpha, is_karma_on, karma_off,
