@@ -1,30 +1,87 @@
-import asyncio
+from typing import Dict, Union
 
 from pyrogram import filters
 
-from YoneRobot import pbot
-from YoneRobot.utils.errors import capture_err
-from YoneRobot.utils.pluginhelpers import member_permissions
-from YoneRobot.utils.dbfunctions import (alpha_to_int, get_karma, get_karmas,
-                                   int_to_alpha, is_karma_on, karma_off,
-                                   karma_on, update_karma)
-from YoneRobot.utils.filter_groups import karma_negative_group, karma_positive_group
+from YoneRobot.db.mongo_helpers.karma import is_karma_on, karma_off, karma_on
+from YoneRobot.function.pluginhelpers import member_permissions
+from YoneRobot.services.mongo2 import db
+from YoneRobot.services.pyrogram import pbot as app
 
-__mod_name__ = "Karma"
-__HELP__ = """[UPVOTE] - Use upvote keywords like "+", "+1", "thanks" etc to upvote a message.
+karmadb = db.karma
+karma_positive_group = 3
+karma_negative_group = 4
+
+
+async def int_to_alpha(user_id: int) -> str:
+    alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
+    text = ""
+    user_id = str(user_id)
+    for i in user_id:
+        text += alphabet[int(i)]
+    return text
+
+
+async def alpha_to_int(user_id_alphabet: str) -> int:
+    alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
+    user_id = ""
+    for i in user_id_alphabet:
+        index = alphabet.index(i)
+        user_id += str(index)
+    user_id = int(user_id)
+    return user_id
+
+
+async def get_karmas_count() -> dict:
+    chats = karmadb.find({"chat_id": {"$lt": 0}})
+    if not chats:
+        return {}
+    chats_count = 0
+    karmas_count = 0
+    for chat in await chats.to_list(length=1000000):
+        for i in chat["karma"]:
+            karmas_count += chat["karma"][i]["karma"]
+        chats_count += 1
+    return {"chats_count": chats_count, "karmas_count": karmas_count}
+
+
+async def get_karmas(chat_id: int) -> Dict[str, int]:
+    karma = await karmadb.find_one({"chat_id": chat_id})
+    if karma:
+        karma = karma["karma"]
+    else:
+        karma = {}
+    return karma
+
+
+async def get_karma(chat_id: int, name: str) -> Union[bool, dict]:
+    name = name.lower().strip()
+    karmas = await get_karmas(chat_id)
+    if name in karmas:
+        return karmas[name]
+
+
+async def update_karma(chat_id: int, name: str, karma: dict):
+    name = name.lower().strip()
+    karmas = await get_karmas(chat_id)
+    karmas[name] = karma
+    await karmadb.update_one(
+        {"chat_id": chat_id}, {"$set": {"karma": karmas}}, upsert=True
+    )
+
+
+_mod_name_ = "Karma"
+_help_ = """[UPVOTE] - Use upvote keywords like "+", "+1", "thanks" etc to upvote a message.
 [DOWNVOTE] - Use downvote keywords like "-", "-1", etc to downvote a message.
-/karma_toggle [ON|OFF] - Enable or Disable Karma System In Your Chat.
 Reply to a message with /karma to check a user's karma
-Send /karma without replying to any message to chek karma list of top 10 users"""
+Send /karma without replying to any message to chek karma list of top 10 users
+<i> Special Credits to WilliamButcherBot </i>"""
 
 
-regex_upvote = (
-    r"^((?i)\+|\+\+|\+1|thx|tnx|ty|thank you|thanx|thanks|pro|cool|good|👍)$"
-)
+regex_upvote = r"^((?i)\+|\+\+|\+1|thx|tnx|ty|thank you|thanx|thanks|pro|cool|good|👍)$"
 regex_downvote = r"^(\-|\-\-|\-1|👎)$"
 
 
-@pbot.on_message(
+@app.on_message(
     filters.text
     & filters.group
     & filters.incoming
@@ -35,18 +92,20 @@ regex_downvote = r"^(\-|\-\-|\-1|👎)$"
     & ~filters.edited,
     group=karma_positive_group,
 )
-@capture_err
 async def upvote(_, message):
+
     if not await is_karma_on(message.chat.id):
         return
-    if not message.reply_to_message.from_user:
-        return
-    if not message.from_user:
-        return
-    if message.reply_to_message.from_user.id == message.from_user.id:
+    try:
+        if message.reply_to_message.from_user.id == message.from_user.id:
+            return
+    except:
         return
     chat_id = message.chat.id
-    user_id = message.reply_to_message.from_user.id
+    try:
+        user_id = message.reply_to_message.from_user.id
+    except:
+        return
     user_mention = message.reply_to_message.from_user.mention
     current_karma = await get_karma(chat_id, await int_to_alpha(user_id))
     if current_karma:
@@ -63,7 +122,7 @@ async def upvote(_, message):
     )
 
 
-@pbot.on_message(
+@app.on_message(
     filters.text
     & filters.group
     & filters.incoming
@@ -74,19 +133,20 @@ async def upvote(_, message):
     & ~filters.edited,
     group=karma_negative_group,
 )
-@capture_err
 async def downvote(_, message):
+
     if not await is_karma_on(message.chat.id):
         return
-    if not message.reply_to_message.from_user:
+    try:
+        if message.reply_to_message.from_user.id == message.from_user.id:
+            return
+    except:
         return
-    if not message.from_user:
-        return
-    if message.reply_to_message.from_user.id == message.from_user.id:
-        return
-
     chat_id = message.chat.id
-    user_id = message.reply_to_message.from_user.id
+    try:
+        user_id = message.reply_to_message.from_user.id
+    except:
+        return
     user_mention = message.reply_to_message.from_user.mention
     current_karma = await get_karma(chat_id, await int_to_alpha(user_id))
     if current_karma:
@@ -103,77 +163,57 @@ async def downvote(_, message):
     )
 
 
-@pbot.on_message(filters.command("karma") & filters.group)
-@capture_err
+@app.on_message(filters.command("karma") & filters.group)
 async def karma(_, message):
     chat_id = message.chat.id
-    if not message.reply_to_message:
-        m = await message.reply_text("Analyzing Karma...Will Take 10 Seconds")
-        karma = await get_karmas(chat_id)
-        if not karma:
-            await m.edit("No karma in DB for this chat.")
-            return
-        msg = f"**Karma list of {message.chat.title}:- **\n"
-        limit = 0
-        karma_dicc = {}
-        for i in karma:
-            user_id = await alpha_to_int(i)
-            user_karma = karma[i]["karma"]
-            karma_dicc[str(user_id)] = user_karma
-            karma_arranged = dict(
-                sorted(
-                    karma_dicc.items(), key=lambda item: item[1], reverse=True
-                )
-            )
-        if not karma_dicc:
-            await m.edit("No karma in DB for this chat.")
-            return
-        for user_idd, karma_count in karma_arranged.items():
-            if limit > 9:
-                break
-            try:
-                user = await app.get_users(int(user_idd))
-                await asyncio.sleep(0.8)
-            except Exception:
-                continue
-            first_name = user.first_name
-            if not first_name:
-                continue
-            username = user.username
-            msg += f"**{karma_count}**  {(first_name[0:12] + '...') if len(first_name) > 12 else first_name}  `{('@' + username) if username else user_idd}`\n"
-            limit += 1
-        await m.edit(msg)
-    else:
-        user_id = message.reply_to_message.from_user.id
-        karma = await get_karma(chat_id, await int_to_alpha(user_id))
-        if karma:
-            karma = karma["karma"]
-            await message.reply_text(f"**Total Points**: __{karma}__")
-        else:
-            karma = 0
-            await message.reply_text(f"**Total Points**: __{karma}__")
-
-
-@pbot.on_message(filters.command("karma_toggle") & ~filters.private)
-@capture_err
-async def captcha_state(_, message):
-    usage = "**Usage:**\n/karma_toggle [ON|OFF]"
     if len(message.command) != 2:
-        await message.reply_text(usage)
+        if not message.reply_to_message:
+            karma = await get_karmas(chat_id)
+            msg = f"**Karma list of {message.chat.title}:- **\n"
+            limit = 0
+            karma_dicc = {}
+            for i in karma:
+                user_id = await alpha_to_int(i)
+                user_karma = karma[i]["karma"]
+                karma_dicc[str(user_id)] = user_karma
+                karma_arranged = dict(
+                    sorted(karma_dicc.items(), key=lambda item: item[1], reverse=True)
+                )
+            for user_idd, karma_count in karma_arranged.items():
+                if limit > 9:
+                    break
+                try:
+                    user_name = (await app.get_users(int(user_idd))).username
+                except Exception:
+                    continue
+                msg += f"{user_name} : `{karma_count}`\n"
+                limit += 1
+            await message.reply_text(msg)
+        else:
+            user_id = message.reply_to_message.from_user.id
+            karma = await get_karma(chat_id, await int_to_alpha(user_id))
+            if karma:
+                karma = karma["karma"]
+                await message.reply_text(f"**Total Points**: __{karma}__")
+            else:
+                karma = 0
+                await message.reply_text(f"**Total Points**: __{karma}__")
         return
-    user_id = message.from_user.id
+    status = message.text.split(None, 1)[1].strip()
+    status = status.lower()
     chat_id = message.chat.id
+    user_id = message.from_user.id
     permissions = await member_permissions(chat_id, user_id)
-    if "can_restrict_members" not in permissions:
+    if "can_change_info" not in permissions:
         await message.reply_text("You don't have enough permissions.")
         return
-    state = message.text.split(None, 1)[1].strip()
-    state = state.lower()
-    if state == "on":
+    if status == "on" or status == "ON":
         await karma_on(chat_id)
-        await message.reply_text("Enabled karma system.")
-    elif state == "off":
+        await message.reply_text(
+            f"Added Chat {chat_id} To Database. Karma will be enabled here"
+        )
+    elif status == "off" or status == "OFF":
         await karma_off(chat_id)
-        await message.reply_text("Disabled karma system.")
-    else:
-        await message.reply_text(usage)
+        await message.reply_text(
+            f"Removed Chat {chat_id} To Database. Karma will be disabled here"
+        )
