@@ -4,7 +4,7 @@ from pyrogram import filters
 
 from YoneRobot.db.mongo_helpers.karma import is_karma_on, karma_off, karma_on
 from YoneRobot.pyrogramee.pluginhelper import member_permissions
-from YoneRobot.mongo import db
+from YoneRobot.mongo2 import db
 from YoneRobot.services.pyrogram import pbot as app
 
 karmadb = db.karma
