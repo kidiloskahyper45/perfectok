@@ -5,6 +5,7 @@ wget
 gtts
 aiofiles
 PyYAML>5.0
+loguru
 beautifulsoup4
 requests==2.20.0
 python-telegram-bot==12.8
