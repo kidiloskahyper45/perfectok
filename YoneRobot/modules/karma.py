@@ -2,7 +2,7 @@ import asyncio
 
 from pyrogram import filters
 
-from YoneRobot import app
+from YoneRobot import pbot
 from YoneRobot.utils.decorators.errors import capture_err
 from YoneRobot.modules.admin import member_permissions
 from YoneRobot.utils.dbfunctions import (alpha_to_int, get_karma, get_karmas,
@@ -24,7 +24,7 @@ regex_upvote = (
 regex_downvote = r"^(\-|\-\-|\-1|👎)$"
 
 
-@app.on_message(
+@pbot.on_message(
     filters.text
     & filters.group
     & filters.incoming
@@ -63,7 +63,7 @@ async def upvote(_, message):
     )
 
 
-@app.on_message(
+@pbot.on_message(
     filters.text
     & filters.group
     & filters.incoming
@@ -103,7 +103,7 @@ async def downvote(_, message):
     )
 
 
-@app.on_message(filters.command("karma") & filters.group)
+@pbot.on_message(filters.command("karma") & filters.group)
 @capture_err
 async def karma(_, message):
     chat_id = message.chat.id
@@ -154,7 +154,7 @@ async def karma(_, message):
             await message.reply_text(f"**Total Points**: __{karma}__")
 
 
-@app.on_message(filters.command("karma_toggle") & ~filters.private)
+@pbot.on_message(filters.command("karma_toggle") & ~filters.private)
 @capture_err
 async def captcha_state(_, message):
     usage = "**Usage:**\n/karma_toggle [ON|OFF]"
