@@ -69,3 +69,5 @@ nudepy
 
 motor
 cloudscraper
+#shazam
+shazamio
