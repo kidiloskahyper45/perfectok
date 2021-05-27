@@ -59,20 +59,20 @@ async def hmm(_, message):
         lel = await edit_or_reply(message, "`Processing...`")
         lol = add_chat(int(message.chat.id))
         if not lol:
-            await lel.edit("Isabella AI Already Activated In This Chat")
+            await lel.edit("Tezza AI Already Activated In This Chat")
             return
         await lel.edit(
-            f"Isabella AI Successfully Added For Users In The Chat {message.chat.id}"
+            f"Tezza AI Successfully Added For Users In The Chat {message.chat.id}"
         )
 
     elif status == "OFF" or status == "off" or status == "Off":
         lel = await edit_or_reply(message, "`Processing...`")
         Escobar = remove_chat(int(message.chat.id))
         if not Escobar:
-            await lel.edit("yone AI Was Not Activated In This Chat")
+            await lel.edit("Tezza AI Was Not Activated In This Chat")
             return
         await lel.edit(
-            f"Isabella AI Successfully Deactivated For Users In The Chat {message.chat.id}"
+            f"Tezza AI Successfully Deactivated For Users In The Chat {message.chat.id}"
         )
 
     elif status == "EN" or status == "en" or status == "english":
@@ -114,8 +114,8 @@ async def hmm(client, message):
         message.continue_propagation()
     if chat_id in en_chats:
         test = msg
-        test = test.replace("Isabella", "Aco")
-        test = test.replace("Isabella", "Aco")
+        test = test.replace("Tezza", "Aco")
+        test = test.replace("Tezza", "Aco")
         URL = "https://api.affiliateplus.xyz/api/chatbot?message=hi&botname=@misstezza_bot&ownername=@rosebakthan"
 
         try:
@@ -275,7 +275,7 @@ async def inuka(client, message):
 
 
 @Yone.on_message(
-    filters.regex("isabella|isabella|Isabella|Isabella|Isabella")
+    filters.regex("Tezza|Tezza|Tezza|tezza|tezza")
     & ~filters.bot
     & ~filters.via_bot
     & ~filters.forwarded
