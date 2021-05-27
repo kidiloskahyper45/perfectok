@@ -1,6 +1,6 @@
 #code by @nousername_psycho
 #-----------------------------------------req
-from cinderella import pbot as app
+from YoneRobot import pbot as app
 from pyrogram import filters
 from shazamio import Shazam
 import youtube_dl
