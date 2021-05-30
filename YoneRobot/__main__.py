@@ -96,10 +96,10 @@ buttons = [
 
 
 HELP_STRINGS = """
-`ʜɪ.. ɪ'ᴍ` [Tezza🙋‍♀️](https://telegra.ph/file/1277e95d2d94a423e5925.jpg) 
+`ʜɪ.. ɪ'ᴍ` [Tezza🙋‍♀️](https://telegra.ph/file/8c0e17d8a0ece04dc9458.jpg) 
 `ᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ ʙᴜᴛᴛᴏɴꜱ ʙᴇʟᴏᴡ ᴛᴏ ɢᴇᴛ ᴅᴏᴄᴜᴍᴇɴᴛᴀᴛɪᴏɴ ᴀʙᴏᴜᴛ ꜱᴘᴇᴄɪꜰɪᴄ ᴍᴏᴅᴜʟᴇꜱ..`"""
 
-yone_IMG = "https://telegra.ph/file/1277e95d2d94a423e5925.jpg"
+yone_IMG = "https://telegra.ph/file/65e6795b106867d77d179.jpg"
 
 DONATE_STRING = """Heya, glad to hear you want to donate!
  You can support the project via [Paypal](#) or by contacting @kittu5588 \
