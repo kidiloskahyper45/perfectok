@@ -3,11 +3,11 @@ from typing import Optional, List
 from telegram import Message, Chat, Update, Bot, User, ParseMode
 from telegram.ext import CommandHandler, MessageHandler, run_async, Filters,CallbackContext
 from telegram.utils.helpers import mention_html
-from dark import dispatcher,LOGGER, DEV_USERS,OWNER_ID,DRAGONS,DEMONS,TIGERS,WOLVES
-from dark.modules.helper_funcs.chat_status import user_not_admin, user_admin, can_delete, is_user_admin, bot_admin
-from dark.modules.log_channel import loggable
-from dark.modules.helper_funcs.extraction import extract_text
-from dark.modules.sql import antiarabic_sql as sql
+from YoneRobot import dispatcher,LOGGER, DEV_USERS,OWNER_ID,DRAGONS,DEMONS,TIGERS,WOLVES
+from YoneRobot.modules.helper_funcs.chat_status import user_not_admin, user_admin, can_delete, is_user_admin, bot_admin
+from YoneRobot.modules.log_channel import loggable
+from YoneRobot.modules.helper_funcs.extraction import extract_text
+from YoneRobot.modules.sql import antiarabic_sql as sql
 
 ANTIARABIC_GROUPS = 12
 
