@@ -78,7 +78,7 @@ def __chat_settings__(chat_id, user_id):
         sql.chat_antiarabic(chat_id))
 
 
-__mod_name__ = "ANTIARABIC"
+__mod_name__ = "antiarabic"
 
 __help__ = """
 AntiArabicScript module is used to delete messages containing characters from one of the following automatically:
